@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "AWS Template"
+Parameters:
+  InstanceType:
+    Type: String
+    Default: "t2.micro"
+    AllowedValues:
+      - "t2.micro"
+      - "m1.small"
+      - "m1.large"
+    Description: "Escolha uma das Opcoes"
+
+
+Resources:
+    BucketTemplate:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: "leandromatoscloudformation"
+        AccessControl: PublicRead
+    InstanciaTemplate:
+      Type: AWS::EC2::Instance
+      Properties:
+        ImageId: "ami-096fda3c22c1c990a"
+        InstanceType: !Ref InstanceType
+        Tags:
+          - Key: name
+            Value: t2micro

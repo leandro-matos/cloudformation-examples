@@ -1,0 +1,11 @@
+---
+Resources:
+  s3bucketname:
+    Type: AWS::S3::Bucket
+    Properties: 
+      AccessControl: PublicRead
+      BucketName: s3bucketproject
+      
+      Tags:
+        - Key: Name
+          Value: s3-bucket

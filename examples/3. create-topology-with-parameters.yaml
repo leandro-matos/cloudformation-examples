@@ -1,0 +1,82 @@
+Parameters:
+  SecurityGroupDescription:
+    Description: Security Group (Simple Parameter)
+    Type: String
+  SecurityGroupPort:
+    Description: Number of Parameter with minvalue and maxvalue
+    Type: Number
+    MinValue: 1150
+    MaxValue: 65000
+  InstanceType:
+    Description: WebServer ec2 (default, AllowedValues)
+    Type: String
+    Default: t2.small
+    AllowedValues:
+      - t1.micro
+      - t2.nano
+      - t2.micro
+      - t2.small
+    ConstraintDescription: Must be a valid ec2 instance
+  DBPwd:
+    NoEcho: true
+    Description: The database admin
+    Type: String
+  KeyName:
+    Description: Name of Par enable ssh
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: existing ec2 keypair
+  SecurityGroupIngressCIDR:
+    Description: The IP Address range 
+    Type: String
+    MinLength: '9'
+    MaxLength: '18'
+    Default: 0.0.0.0/0
+    ConstraintDescription: must be valid IP CIDR
+  MyVPC:
+    Description: VPC 
+    Type: AWS::EC2::VPC
+  MySubnetIDs:
+    Description: Subinet Ids list
+    Type: "List<AWS::EC2::Subnet::Id>"
+  DbSubnetIpBlocks:
+    Description: "Delimited three CIDR Blocks"
+    Type: CommaDelimitedList
+    Default: "10.0.48.0/24, 10.0.112.0/24, 10.0.176.0/24"
+
+Resources:
+  Myec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      ImageId: "ami-096fda3c22c1c990a"
+      SubnetId: !Ref DbSubnet1
+    
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Ref SecurityGroupDescription
+      SecurityGroupIngress:
+        - CidrIp: !Ref SecurityGroupIngressCIDR
+          FromPort: !Ref SecurityGroupPort
+          ToPort: !Ref SecurityGroupPort
+          IpProtocol: tcp
+      VpcId: !Ref MyVPC
+
+  DbSubnet1:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: !Ref MyVPC
+        CidrBlock: !Select [0, !Ref DbSubnetIpBlocks]
+ 
+  DbSubnet2:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: !Ref MyVPC
+        CidrBlock: !Select [1, !Ref DbSubnetIpBlocks]
+
+  DbSubnet3:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId: !Ref MyVPC
+        CidrBlock: !Select [2, !Ref DbSubnetIpBlocks]

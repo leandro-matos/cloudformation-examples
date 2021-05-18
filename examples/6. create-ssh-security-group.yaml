@@ -1,0 +1,25 @@
+Resources:
+  SSHSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Enable SSH
+        SecurityGroupIngress:
+          - CidrIp: 10.0.48.0/24
+            FromPort: 22
+            IpProtocol: tcp
+            ToPort: 22
+          - CidrIp: 10.0.112.0/24
+            FromPort: 22
+            IpProtocol: tcp
+            ToPort: 22
+          - CidrIp: 10.0.176.0/24
+            FromPort: 22
+            IpProtocol: tcp
+            ToPort: 22
+
+Outputs:
+  StackSSHSecurityGroup:
+    Description: The SSH Security Group for our Company
+    Value: !Ref SSHSecurityGroup
+    Export:
+      Name: SSHSecurityGroup
